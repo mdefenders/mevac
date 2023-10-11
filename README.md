@@ -55,16 +55,62 @@ For FB the post timestamp is used as a unique key.
 | push facebook            | pushes FB archive to Mastodon          |
 | load report, push report | prints the current process state       |
 
-# Usage examples
+# Usage
 
 ```shell
 docker run --rm -ti -v <path to fb backup posts folder>/posts:/app/posts -v <path to loacal db folder>:/app/db mdefenders/mevac:latest command
 ```
+## Examples
+
+### load posts to internal database
+```shell
+docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefenders/mevac:latest load facebook
+INFO:root:Facebook post file: your_posts_2421432.json
+WARNING:root:Post from 07-09-2014 11:45:14 has more then 4 attachments, trimmed to 4
+WARNING:root:Added link http://www.newsru.com/religy/12sep2014/auszeichnen.html to post from 12-09-2014 16:08:33
+WARNING:root:Added link http://www.snob.ru/profile/26524/blog/81186 to post from 19-09-2014 08:57:11
+INFO:root:Loaded 20 posts
+ FB Posts   |   Count
+------------+---------
+ Imported   |      20
+ Pushed     |       0
+ Long posts |       2
+
+ FB Media   |   Count
+------------+---------
+ Imported   |      10
+ Pushed     |       0
+
+```
+
+### Print load report
 
 ```shell
-docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefenders/mevac:latest push report
+docker run --rm -ti  -v ./db/:/app/db mdefenders/mevac:latest load report
+ FB Posts   |   Count
+------------+---------
+ Imported   |      20
+ Pushed     |       0
+ Long posts |       2
+
+ FB Media   |   Count
+------------+---------
+ Imported   |      10
+ Pushed     |       0
 ```
+
+### Push posts to Mastodon
 
 ```shell
 docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefenders/mevac:latest push facebook
+ FB Posts   |   Count
+------------+---------
+ Imported   |      20
+ Pushed     |      19
+ Long posts |       2
+
+ FB Media   |   Count
+------------+---------
+ Imported   |      10
+ Pushed     |      10
 ```
