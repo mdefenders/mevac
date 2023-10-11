@@ -1,17 +1,17 @@
 # mEvac
 
-Simple script to migrate some social networks post dumps to Mastodon
+Simple script to migrate some social network post dumps to Mastodon
 
 # Introduction
 
 Mastodon doesn't provide any content migration tool. The explanation is - developers wouldn't like to overload the
-Fediverse with traffic of imported content. I appreciate this decision, it makes a logical sense. But the migration may
+Fediverse with traffic of imported content. I appreciate this decision,it makes logical sense. However, the migration may
 be useful for particular cases. For example, I would like to move a historical archive of my content from FB&X to my
-own, self-hosted Mastodon instance based dedicated accounts.
+own, self-hosted Mastodon instance-based dedicated accounts.
 
 # Features
 
-- built as docker image
+- built as a docker image
 - FB posts migration
 - FB posts timestamping and auto-threading
 
@@ -26,9 +26,9 @@ own, self-hosted Mastodon instance based dedicated accounts.
 - mastodon account and access token (may be created using Mastodon UI)
 - Downloaded FB backup (archive)
 
-# Variables / parameters
+# Variables/parameters
 
-The default script behavior maybe configured using environment variables. Variables without defaults values are prompted
+The default script behaviour may be configured using environment variables. Variables without default values are prompted
 
 | Env var                      |        Default value |   
 |:-----------------------------|---------------------:|
@@ -43,7 +43,7 @@ The default script behavior maybe configured using environment variables. Variab
 
 ## Docker container commands
 
-You need to run commands to load archive int internal db and push it to Mastodon
+You need to run commands to load the archive into the internal db and push it to Mastodon
 Internal db is used to provide the command reentrancy. You can run the command multiple times in case of errors or
 failures and avoid duplicates. Removing the db file will reset the process.
 
@@ -51,22 +51,22 @@ For FB the post timestamp is used as a unique key.
 
 | Command                  | Description                            |   
 |:-------------------------|:---------------------------------------|
-| load facebook            | loads FB archive int internal database |
+| load facebook            | loads FB archive into internal database |
 | push facebook            | pushes FB archive to Mastodon          |
 | load report, push report | prints the current process state       |
 
 # Usage
 
 ```shell
-docker run --rm -ti -v <path to fb backup posts folder>/posts:/app/posts -v <path to loacal db folder>:/app/db mdefenders/mevac:latest command
+docker run --rm -ti -v <path to fb backup posts folder>/posts:/app/posts -v <path to local db folder>:/app/db mdefenders/mevac:latest command
 ```
 ## Examples
 
-### load posts to internal database
+### Load posts to the internal database
 ```shell
 docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefenders/mevac:latest load facebook
 INFO:root:Facebook post file: your_posts_2421432.json
-WARNING:root:Post from 07-09-2014 11:45:14 has more then 4 attachments, trimmed to 4
+WARNING:root:Post from 07-09-2014 11:45:14 has more than 4 attachments, trimmed to 4
 WARNING:root:Added link http://www.newsru.com/religy/12sep2014/auszeichnen.html to post from 12-09-2014 16:08:33
 WARNING:root:Added link http://www.snob.ru/profile/26524/blog/81186 to post from 19-09-2014 08:57:11
 INFO:root:Loaded 20 posts
