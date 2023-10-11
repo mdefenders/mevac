@@ -5,7 +5,8 @@ Simple script to migrate some social network post dumps to Mastodon
 # Introduction
 
 Mastodon doesn't provide any content migration tool. The explanation is - developers wouldn't like to overload the
-Fediverse with traffic of imported content. I appreciate this decision,it makes logical sense. However, the migration may
+Fediverse with traffic of imported content. I appreciate this decision,it makes logical sense. However, the migration
+may
 be useful for particular cases. For example, I would like to move a historical archive of my content from FB&X to my
 own, self-hosted Mastodon instance-based dedicated accounts.
 
@@ -28,7 +29,8 @@ own, self-hosted Mastodon instance-based dedicated accounts.
 
 # Variables/parameters
 
-The default script behaviour may be configured using environment variables. Variables without default values are prompted
+The default script behaviour may be configured using environment variables. Variables without default values are
+prompted
 
 | Env var                      |        Default value |   
 |:-----------------------------|---------------------:|
@@ -49,22 +51,26 @@ failures and avoid duplicates. Removing the db file will reset the process.
 
 For FB the post timestamp is used as a unique key.
 
-| Command                  | Description                            |   
-|:-------------------------|:---------------------------------------|
+| Command                  | Description                             |   
+|:-------------------------|:----------------------------------------|
 | load facebook            | loads FB archive into internal database |
-| push facebook            | pushes FB archive to Mastodon          |
-| load report, push report | prints the current process state       |
+| push facebook            | pushes FB archive to Mastodon           |
+| load report, push report | prints the current process state        |
 
 # Usage
 
 ```shell
 docker run --rm -ti -v <path to fb backup posts folder>/posts:/app/posts -v <path to local db folder>:/app/db mdefenders/mevac:latest command
 ```
+
 ## Examples
 
 ### Load posts to the internal database
+
 ```shell
 docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefenders/mevac:latest load facebook
+````
+```
 INFO:root:Facebook post file: your_posts_2421432.json
 WARNING:root:Post from 07-09-2014 11:45:14 has more than 4 attachments, trimmed to 4
 WARNING:root:Added link http://www.newsru.com/religy/12sep2014/auszeichnen.html to post from 12-09-2014 16:08:33
@@ -87,6 +93,8 @@ INFO:root:Loaded 20 posts
 
 ```shell
 docker run --rm -ti  -v ./db/:/app/db mdefenders/mevac:latest load report
+````
+```
  FB Posts   |   Count
 ------------+---------
  Imported   |      20
@@ -103,6 +111,8 @@ docker run --rm -ti  -v ./db/:/app/db mdefenders/mevac:latest load report
 
 ```shell
 docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefenders/mevac:latest push facebook
+````
+```
  FB Posts   |   Count
 ------------+---------
  Imported   |      20
