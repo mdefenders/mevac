@@ -135,3 +135,16 @@ docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefend
  Imported   |      10
  Pushed     |      10
 ```
+
+# Changelog
+
+## 0.0.2
+
+- dry-run mode added as default
+
+# Backlog
+
+- import progress
+- X migration
+- Mastodon migration
+- 
