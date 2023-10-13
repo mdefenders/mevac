@@ -13,7 +13,7 @@ on:
 jobs:
 
   call-publish-docker:
-    uses: mdefenders/shared-workflows/.github/workflows/publish-docker.yaml@dev
+    uses: mdefenders/shared-workflows/.github/workflows/publish-docker.yaml@main
     with:
       build-args: | 
         "PYTHON_VERSION=${{ vars.PYTHON_VERSION }}"
