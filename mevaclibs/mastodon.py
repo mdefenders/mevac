@@ -31,7 +31,7 @@ class Mastodon:
 
         return result.json().get('name', '')
 
-    def _post_item(self, item_type, data, media_ids=None, private=False, in_reply_to_id=''):
+    def _post_item(self, item_type, data, media_ids, private, in_reply_to_id=''):
         result = None
         for n in range(self._env.ratelimit_retries):
             try:
@@ -103,8 +103,8 @@ class Mastodon:
 
         return result
 
-    def upload_media(self, media_file):
-        return self._post_item('media', media_file)
+    def upload_media(self, media_file, dry_run=True):
+        return self._post_item('media', media_file, private=dry_run)
 
     def delete_entity(self, status_id):
         result = None
