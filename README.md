@@ -144,7 +144,7 @@ docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefend
 
 # Backlog
 
+- Tests on CI
 - import progress
 - X migration
 - Mastodon migration
-- 
