@@ -42,18 +42,17 @@ class Mastodon:
                         payload['visibility'] = 'private'
                     if in_reply_to_id:
                         payload['in_reply_to_id'] = in_reply_to_id
-                        if not dry_run:
-                            result = requests.post(endpoint, headers=self._headers, json=payload)
+                    if not dry_run:
+                        result = requests.post(endpoint, headers=self._headers, json=payload)
                 elif item_type == 'media':
                     endpoint = f'{self._endpoint}/api/v2/media'
                     if not dry_run:
                         with open(data, 'rb') as file:
                             result = requests.post(endpoint, headers=self._headers, files={'file': file})
+                            self._update_rate_limits(result)
+                            result.raise_for_status()
                 else:
                     raise Exception(f'Unknown post data type {item_type}')
-                if not dry_run:
-                    self._update_rate_limits(result)
-                    result.raise_for_status()
                 break
             except HTTPError as exc:
                 code = exc.response.status_code
