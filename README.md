@@ -1,14 +1,15 @@
 # mEvac
 
-Simple script to migrate some social network post dumps to Mastodon
+Simple script to migrate social networks post dumps to Mastodon
+Currentli supported networks:
+- Facebook
 
 # Introduction
 
 Mastodon doesn't provide any content migration tool. The explanation is - developers wouldn't like to overload the
-Fediverse with traffic of imported content. I appreciate this decision,it makes logical sense. However, the migration
-may
-be useful for particular cases. For example, I would like to move a historical archive of my content from FB&X to my
-own, self-hosted Mastodon instance-based dedicated accounts.
+Fediverse with traffic of imported content. I appreciate this decision, it makes logical sense. However, the migration
+may be useful for particular cases. For example, I would like to move a historical archive of my content from Facebook
+and Twitter to my own, self-hosted Mastodon instance-based dedicated accounts.
 
 # Features
 
