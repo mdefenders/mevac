@@ -139,8 +139,7 @@ docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefend
 
 # Changelog
 
-## 0.0.2
-
+## 0.0.4
 - Pass 422 error on push
 - Extended error handling and logging
 - Some progress logging
