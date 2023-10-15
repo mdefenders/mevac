@@ -37,7 +37,7 @@ class Pusher:
                 c.execute('UPDATE fb_media SET posted = ? WHERE id = ?', (media_post_id, fb_media[0],))
                 self._conn.commit()
             logging.info(f'Dry-run {dry_run}. {fb_post_posted}/{fb_posts_count} '
-                         f'Posting toot from {formatted_timestamp}: {fb_post[1][:10]}')
+                         f'Posting toot from {formatted_timestamp}: {fb_post[1][:20]}')
             if fb_post[1] != '' or media_post_ids:
                 post_ids = self._mst.post_status(f'{formatted_timestamp}\r{fb_post[1]}', media_post_ids,
                                                  private=self._push_env.push_private, dry_run=dry_run)
