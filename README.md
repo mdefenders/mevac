@@ -164,11 +164,15 @@ docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefend
 
 # Changelog
 
-## 0.0.4
+## 0.0.5
 
 - Pass 422 error on push
 - Extended error handling and logging
 - Some progress logging
+
+## 0.0.4
+
+hotfix release
 
 ## 0.0.3
 
@@ -180,7 +184,6 @@ hotfix release
 
 # Backlog
 
-- test and fix media procession handling
 - Tests on CI
 - import progress
 - X migration
