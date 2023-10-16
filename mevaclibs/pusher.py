@@ -18,10 +18,10 @@ class Pusher:
 
     def push_fb_posts(self, dry_run=True):
         c = self._conn.cursor()
-        c.execute('SELECT count(*) FROM fb_posts WHERE posted ==0')
+        c.execute('SELECT count(*) FROM fb_posts WHERE posted = 0')
         fb_posts_count = c.fetchone()[0]
         fb_post_posted = 1
-        c.execute('SELECT * FROM fb_posts WHERE posted ==0')
+        c.execute('SELECT * FROM fb_posts WHERE posted = 0')
         fb_posts = c.fetchall()
         result = list()
         for fb_post in fb_posts:

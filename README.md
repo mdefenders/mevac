@@ -151,7 +151,7 @@ hotfix release
 - dry-run mode added as default
 
 # Backlog
-
+- test and fix media procession handling
 - Tests on CI
 - import progress
 - X migration
