@@ -27,7 +27,7 @@ class Pusher:
         c.execute('SELECT count(*) FROM fb_posts WHERE posted = ?', (post_condition,))
         fb_posts_count = c.fetchone()[0]
         fb_post_posted = 1
-        c.execute('SELECT * FROM fb_posts WHERE posted = 0')
+        c.execute('SELECT * FROM fb_posts WHERE posted = ?', (post_condition,))
         fb_posts = c.fetchall()
         result = list()
         for fb_post in fb_posts:
@@ -37,8 +37,11 @@ class Pusher:
             fb_medias = c.fetchall()
             for fb_media in fb_medias:
                 media_file = f'{self._load_env.fb_posts_dir}/{fb_media[2]}'
-                logging.info(f'Dry-run {dry_run}. Posting media {media_file}')
-                media_post_id = self._mst.upload_media(media_file, dry_run)
+                if fb_media[3] == 0:
+                    logging.info(f'Dry-run {dry_run}. Posting media {media_file}')
+                    media_post_id = self._mst.upload_media(media_file, dry_run)
+                else:
+                    media_post_id = fb_media[3]
                 media_post_ids.append(media_post_id)
                 c.execute('UPDATE fb_media SET posted = ? WHERE id = ?', (media_post_id, fb_media[0],))
                 self._conn.commit()

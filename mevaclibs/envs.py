@@ -75,11 +75,11 @@ class PushEnv(object):
 
     @property
     def media_timeout(self):
-        return self._media_timeout
+        return int(self._media_timeout)
 
     @property
     def media_retries(self):
-        return self._media_retries
+        return int(self._media_retries)
 
     @property
     def push_private(self):

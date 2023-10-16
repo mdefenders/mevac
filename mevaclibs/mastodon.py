@@ -141,12 +141,11 @@ class Mastodon:
 
     def _wait_for_media(self, media_id):
         if media_id != '0':
-            endpoint = f'{self._endpoint}/api/v2/media'
+            endpoint = f'{self._endpoint}/api/v1/media'
             for i in range(self._env.media_retries):
+                logging.info(f'Waiting for media {media_id} to be processed. Round {i}')
                 result = requests.get(f'{endpoint}/{media_id}', headers=self._headers)
-                self._update_rate_limits(result)
                 if result.status_code == HTTPStatus.PARTIAL_CONTENT:
                     time.sleep(self._env.media_timeout)
-                    logging.info(f'Waiting for media {media_id} to be processed. Round {i}')
                 else:
                     break
