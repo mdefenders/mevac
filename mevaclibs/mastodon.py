@@ -53,6 +53,8 @@ class Mastodon:
                             result = requests.post(endpoint, headers=self._headers, files={'file': file})
                             self._update_rate_limits(result)
                             result.raise_for_status()
+                            if result.status_code == HTTPStatus.ACCEPTED:
+                                self._wait_for_media(result.json().get('id', '0'))
                 else:
                     raise Exception(f'Unknown post data type {item_type}')
                 break
@@ -136,3 +138,15 @@ class Mastodon:
                     continue
                 raise
         return result.json().get('id', '0')
+
+    def _wait_for_media(self, media_id):
+        if media_id != '0':
+            endpoint = f'{self._endpoint}/api/v2/media'
+            for i in range(self._env.media_retries):
+                result = requests.get(f'{endpoint}/{media_id}', headers=self._headers)
+                self._update_rate_limits(result)
+                if result.status_code == HTTPStatus.PARTIAL_CONTENT:
+                    time.sleep(self._env.media_timeout)
+                    logging.info(f'Waiting for media {media_id} to be processed. Round {i}')
+                else:
+                    break

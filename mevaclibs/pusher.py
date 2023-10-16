@@ -16,9 +16,15 @@ class Pusher:
         if not path.exists(self._load_env.fb_posts_dir):
             raise Exception(f'Facebook posts dir {self._load_env.fb_posts_dir} does not exist')
 
-    def push_fb_posts(self, dry_run=True):
+    def push_fb_posts(self, dry_run=True, retry=False):
         c = self._conn.cursor()
-        c.execute('SELECT count(*) FROM fb_posts WHERE posted = 0')
+        if retry:
+            post_condition = '2'
+            media_condition = 'AND posted != 0'
+        else:
+            post_condition = '0'
+            media_condition = 'AND posted = 0'
+        c.execute('SELECT count(*) FROM fb_posts WHERE posted = ?', (post_condition,))
         fb_posts_count = c.fetchone()[0]
         fb_post_posted = 1
         c.execute('SELECT * FROM fb_posts WHERE posted = 0')
@@ -27,7 +33,7 @@ class Pusher:
         for fb_post in fb_posts:
             media_post_ids = list()
             formatted_timestamp = strftime("%d-%m-%Y %H:%M:%S", localtime(fb_post[0]))
-            c.execute('SELECT * FROM fb_media WHERE post_id = ? AND posted == 0', (fb_post[0],))
+            c.execute(f'SELECT * FROM fb_media WHERE post_id = ? {media_condition}', (fb_post[0],))
             fb_medias = c.fetchall()
             for fb_media in fb_medias:
                 media_file = f'{self._load_env.fb_posts_dir}/{fb_media[2]}'
