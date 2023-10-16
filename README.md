@@ -1,7 +1,8 @@
 # mEvac
 
 Simple script to migrate social networks post dumps to Mastodon
-Currentli supported networks:
+
+Currently supported networks:
 
 - Facebook
 
