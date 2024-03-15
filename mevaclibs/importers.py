@@ -6,9 +6,11 @@ import json
 import sqlite3
 from time import strftime, localtime
 from tabulate import tabulate
+from mevaclibs.common import Utils
+from bs4 import BeautifulSoup
 
 
-class Importer:
+class FbImporter:
     def __init__(self, load_env: LoadEnv):
         self._conn = sqlite3.connect(load_env.db_file)
         self._env = load_env
@@ -119,3 +121,116 @@ class Importer:
         print(tabulate(self._env.stat_fb_posts, headers=['FB Posts', 'Count'], tablefmt='presto'))
         print('')
         print(tabulate(self._env.stat_fb_media, headers=['FB Media', 'Count'], tablefmt='presto'))
+
+
+class MstImporter:
+    def __init__(self, load_env: LoadEnv):
+        self._conn = sqlite3.connect(load_env.db_file)
+        self._env = load_env
+        if not path.exists(self._env.mst_posts_dir):
+            raise Exception(f'Mastodon posts dir {self._env.mst_posts_dir} does not exist')
+        self._mst_post_file = f'{self._env.mst_posts_dir}/outbox.json'
+        if not path.exists(self._mst_post_file):
+            raise Exception(f'Mastodon post file {self._mst_post_file} does not exist')
+        self._posts = dict()
+        self._prepare_db()
+
+    def load_mst_posts(self, dry_run=True):
+        c = self._conn.cursor()
+        with open(f'{self._mst_post_file}') as mst_posts:
+            self._posts = json.load(mst_posts).get('orderedItems', [])
+        posts_count = 0
+        media_count = 0
+        for post in self._posts:
+            # parse post
+            if post.get('to', '')[0][-6:] != 'Public':
+                privacy = 0
+            else:
+                privacy = 1
+            object_id = post.get('object', {})
+            split_object_id = object_id.get('id', '').rsplit('/', 1)
+            post_id = int(split_object_id[-1])
+            parent_id = 0
+            in_reply_to = post['object'].get('inReplyTo', None)
+            if in_reply_to:
+                split_parent_id = in_reply_to.rsplit('/', 1)
+                # skip replies to external comments
+                if split_parent_id[0] != split_object_id[0]:
+                    logging.warning(f'Skip external comment reply. Post id: {post_id}')
+                    continue
+                parent_id = split_parent_id[-1]
+                if self._get_mst_post_by_id(parent_id)[0] != 1:
+                    logging.warning(f'Skip external comment thread. Post id: {post_id}')
+                    continue
+
+            original_date = Utils.as_timestamp_to_epoch(post.get('published', '1900-01-01T00:00:00Z'))
+            if post['object'].get('sensitive', False):
+                sensitive = 1
+            else:
+                sensitive = 0
+            language, text = list(post['object']['contentMap'].items())[0]
+            text = BeautifulSoup(text, 'html.parser').get_text()
+            if text != '' or post['object']['attachment']:
+                posts_count += 1
+                try:
+                    post_media_count = 0
+                    # process attachments
+                    for attachment in post['object']['attachment']:
+                        if attachment['url']:
+                            try:
+                                logging.info(f'Dry-run {dry_run}. '
+                                             f'Adding attachment {attachment["url"]} to post {post_id}')
+                                if not dry_run:
+                                    c.execute('INSERT INTO mst_media (post_id, media_type, uri) VALUES (?, ?, ?)',
+                                              (post_id, attachment['mediaType'], attachment['url']))
+                                media_count += 1
+                                post_media_count += 1
+                            except sqlite3.IntegrityError:
+                                logging.warning(
+                                    f'Attachment {attachment["url"]} already exists')
+                    # process post
+                    logging.info(f'Dry-run {dry_run}. Inserting post  {post_id}')
+                    if not dry_run:
+                        c.execute(
+                            'INSERT INTO mst_posts (id, parent_id, original_date, privacy, language, text, sensitive)'
+                            ' VALUES (?, ?, ?, ?, ?, ?, ?)', (post_id, parent_id, original_date, privacy, language,
+                                                             text, sensitive))
+                    self._conn.commit()
+                except sqlite3.IntegrityError:
+                    logging.warning(
+                        f'Post {post_id} already exists')
+
+        logging.info(f'Loaded {posts_count} posts, {media_count} media files')
+
+    #
+    def collect_stat(self):
+        c = self._conn.cursor()
+        result = c.execute('SELECT COUNT (*) FROM mst_posts').fetchone()
+        self._env.stat_mst_posts.append(['Imported', result[0]])
+        result = c.execute('SELECT COUNT (*) FROM mst_posts WHERE posted != 0').fetchone()
+        self._env.stat_mst_posts.append(['Pushed', result[0]])
+        result = c.execute('SELECT COUNT (*) FROM mst_media').fetchone()
+        self._env.stat_mst_media.append(['Imported', result[0]])
+        result = c.execute('SELECT COUNT (*) FROM mst_media WHERE posted != 0').fetchone()
+        self._env.stat_mst_media.append(['Pushed', result[0]])
+
+    def _prepare_db(self):
+        c = self._conn.cursor()
+        c.execute('CREATE TABLE IF NOT EXISTS mst_posts (id INTEGER PRIMARY KEY, parent_id INTEGER default 0, '
+                  'original_date INTEGER default 0, privacy INTEGER default 0, language TEXT, text TEXT, '
+                  'sensitive INTEGER default 0, posted INTEGER default 0)')
+        c.execute('CREATE TABLE IF NOT EXISTS mst_media (id INTEGER PRIMARY KEY, post_id INTEGER, media_type TEXT, '
+                  'uri TEXT, posted INTEGER default 0)')
+        c.execute('CREATE UNIQUE INDEX IF NOT EXISTS mst_media_post_id_uri ON mst_media (post_id, uri)')
+        c.execute('CREATE INDEX IF NOT EXISTS mst_parent_id ON mst_posts (parent_id)')
+        self._conn.commit()
+
+    def _get_mst_post_by_id(self, post_id):
+        c = self._conn.cursor()
+        result = c.execute('SELECT COUNT(*) FROM mst_posts WHERE id = ?', (post_id,)).fetchone()
+        return result
+
+    def print_stat(self):
+        print(tabulate(self._env.stat_mst_posts, headers=['Mastodon Posts', 'Count'], tablefmt='presto'))
+        print('')
+        print(tabulate(self._env.stat_mst_media, headers=['Mastodon Media', 'Count'], tablefmt='presto'))

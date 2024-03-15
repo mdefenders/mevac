@@ -7,11 +7,17 @@ class LoadEnv(object):
         self._env = dict()
         self._stat_fb_posts = list()
         self._stat_fb_media = list()
+        self._stat_mst_posts = list()
+        self._stat_mst_media = list()
         self._db_file = os.environ.get('DB_FILE', '/app/db/evacuator.db')
         self._env['fb_posts_dir'] = os.environ.get('FB_POSTS_DIR', '')
+        self._env['mst_posts_dir'] = os.environ.get('MST_POSTS_DIR', '')
         if not self._env['fb_posts_dir']:
             if os.path.exists('./posts'):
                 self._env['fb_posts_dir'] = './posts'
+        if not self._env['mst_posts_dir']:
+            if os.path.exists('./mstposts'):
+                self._env['mst_posts_dir'] = './mstposts'
         for key, value in self._env.items():
             if not value:
                 self._env[key] = input(f'Type {key.replace("_", " ")}: ').strip()
@@ -21,6 +27,10 @@ class LoadEnv(object):
     @property
     def fb_posts_dir(self):
         return self._env['fb_posts_dir']
+
+    @property
+    def mst_posts_dir(self):
+        return self._env['mst_posts_dir']
 
     @property
     def stat_fb_posts(self):
@@ -37,6 +47,22 @@ class LoadEnv(object):
     @stat_fb_media.setter
     def stat_fb_media(self, value):
         self._stat_fb_media = value
+
+    @property
+    def stat_mst_posts(self):
+        return self._stat_mst_posts
+
+    @stat_mst_posts.setter
+    def stat_mst_posts(self, value):
+        self._stat_mst_posts = value
+
+    @property
+    def stat_mst_media(self):
+        return self._stat_mst_media
+
+    @stat_mst_media.setter
+    def stat_mst_media(self, value):
+        self._stat_mst_media = value
 
     @property
     def db_file(self):

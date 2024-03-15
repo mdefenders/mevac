@@ -36,14 +36,14 @@ The default script behaviour may be configured using environment variables. Vari
 prompted
 
 | Env var                      |        Default value |   
-|:-----------------------------|---------------------:|
+|:-----------------------------|--------------------:|
 | LOGLEVEL                     |                 INFO |
 | MASTODON_DOMAIN              |                    - |
 | MASTODON_RATELIMIT_RETRIES   |                    3 |
 | MASTODON_CLIENT_ACCESS_TOKEN |                    - |
 | MASTODON_TEXT_SIZE_LIMIT     |                  500 |
 | MASTODON_WORK_DIR            |                   ./ |
-| MASTODON_PUSH_PUBLIC         |                    0 |
+| MASTODON_PUSH_PRIVATE         |                    1|
 | MASTODON_MEDIA_TIMEOUT       |                   10 |
 | MASTODON_MEDIA_RETRIES       |                    3 |
 | DB_FILE                      | /app/db/evacuator.db |
@@ -51,8 +51,8 @@ prompted
 ## Important notes
 
 Because of uncertainty of source data, and different visibility models, the script uploads all posts with "Public" or "
-Followers only" visibility. The default is "followers only". You can change this behaviour setting MASTODON_PUSH_PUBLIC
-variable into '1'.
+Followers only" visibility. The default is "followers only". You can change this behaviour setting MASTODON_PUSH_PRIVATE
+variable into '0'.
 
 ## Docker container commands and options
 

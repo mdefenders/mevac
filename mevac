@@ -2,7 +2,7 @@
 import logging
 import os
 from mevaclibs.envs import LoadEnv, PushEnv
-from mevaclibs.importer import Importer
+from mevaclibs.importers import FbImporter
 from mevaclibs.pusher import Pusher
 import argparse
 
@@ -20,13 +20,15 @@ def main():
 
     args = parser.parse_args()
     load_env = LoadEnv()
-    importer = Importer(load_env)
+    importer = FbImporter(load_env)
 
     if args.operation == "load":
 
         if args.type == "facebook":
             importer.load_fb_posts(not args.no_dry_run)
         elif args.type == "twitter":
+            pass
+        elif args.type == "mastodon":
             pass
         elif args.type == "report":
             pass

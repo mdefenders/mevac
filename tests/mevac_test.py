@@ -1,7 +1,8 @@
+import os
 import unittest
 from mevaclibs.envs import PushEnv, LoadEnv
 from mevaclibs.mastodon import Mastodon
-from mevaclibs.importer import Importer
+from mevaclibs.importers import FbImporter, MstImporter
 from mevaclibs.pusher import Pusher
 
 
@@ -45,12 +46,15 @@ class TestMastodon(unittest.TestCase):
             self.assertEqual(post_id, deleted_post_id)
 
 
-class TestImporter(unittest.TestCase):
+class TestFbImporter(unittest.TestCase):
     load_env = LoadEnv()
     push_env = PushEnv()
 
+    def prepare(self):
+        os.remove(self.load_env.db_file)
+
     def run_importer(self):
-        importer = Importer(self.load_env)
+        importer = FbImporter(self.load_env)
         self.assertIsInstance(importer._facebook_post_file, str)
         self.assertNotEqual(importer._facebook_post_file, '')
         importer.load_fb_posts()
@@ -58,17 +62,48 @@ class TestImporter(unittest.TestCase):
         importer.collect_stat()
         importer.print_stat()
 
-    def rub_pusher(self):
+    def run_pusher(self):
         pusher = Pusher(self.load_env, self.push_env)
-        pushed_posts = pusher.push_fb_posts()
+        pushed_posts = pusher.push_fb_posts(dry_run=False)
         for pushed_post in pushed_posts:
             self.assertIsInstance(int(pushed_post), int)
             deleted_post_id = pusher._mst.delete_entity(pushed_post)
             self.assertEqual(pushed_post, deleted_post_id)
 
     def test_importer(self):
+        self.prepare()
         self.run_importer()
-        self.rub_pusher()
+        self.run_pusher()
+
+
+class TestMstImporter(unittest.TestCase):
+    load_env = LoadEnv()
+    push_env = PushEnv()
+
+    def prepare(self):
+        # os.remove(self.load_env.db_file)
+        pass
+
+    def run_importer(self):
+        importer = MstImporter(self.load_env)
+        self.assertIsInstance(importer._mst_post_file, str)
+        self.assertNotEqual(importer._mst_post_file, '')
+        importer.load_mst_posts(dry_run=False)
+        self.assertIsNotNone(self.load_env.stat_mst_posts)
+        # importer.collect_stat()
+        # importer.print_stat()
+
+    # def run_pusher(self):
+    #     pusher = Pusher(self.load_env, self.push_env)
+    #     pushed_posts = pusher.push_fb_posts()
+    #     for pushed_post in pushed_posts:
+    #         self.assertIsInstance(int(pushed_post), int)
+    #         deleted_post_id = pusher._mst.delete_entity(pushed_post)
+    #         self.assertEqual(pushed_post, deleted_post_id)
+    #
+    def test_importer(self):
+        self.run_importer()
+        # self.run_pusher()
 
 
 if __name__ == '__main__':
