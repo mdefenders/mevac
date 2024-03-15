@@ -80,18 +80,14 @@ class TestMstImporter(unittest.TestCase):
     load_env = LoadEnv()
     push_env = PushEnv()
 
-    def prepare(self):
-        # os.remove(self.load_env.db_file)
-        pass
-
     def run_importer(self):
         importer = MstImporter(self.load_env)
         self.assertIsInstance(importer._mst_post_file, str)
         self.assertNotEqual(importer._mst_post_file, '')
         importer.load_mst_posts(dry_run=False)
         self.assertIsNotNone(self.load_env.stat_mst_posts)
-        # importer.collect_stat()
-        # importer.print_stat()
+        importer.collect_stat()
+        importer.print_stat()
 
     # def run_pusher(self):
     #     pusher = Pusher(self.load_env, self.push_env)
