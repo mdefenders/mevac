@@ -143,7 +143,12 @@ class MstImporter:
         media_count = 0
         for post in self._posts:
             # parse post
-            if post.get('to', '')[0][-6:] != 'Public':
+            if post.get('type', '') == 'Announce':
+                logging.warning(f'Skip Announce post. Post id: {post.get("id")}')
+                continue
+            if not post.get('to', []):
+                privacy = 3
+            elif post.get('to')[0][-6:] != 'Public':
                 privacy = 0
             else:
                 privacy = 1
@@ -156,11 +161,11 @@ class MstImporter:
                 split_parent_id = in_reply_to.rsplit('/', 1)
                 # skip replies to external comments
                 if split_parent_id[0] != split_object_id[0]:
-                    logging.warning(f'Skip external comment reply. Post id: {post_id}')
+                    logging.warning(f'Skip external comment reply. Post id: {post.get("id")}')
                     continue
                 parent_id = split_parent_id[-1]
                 if self._get_mst_post_by_id(parent_id)[0] != 1:
-                    logging.warning(f'Skip external comment thread. Post id: {post_id}')
+                    logging.warning(f'Skip external comment thread. Post id: {post.get("id")}')
                     continue
 
             original_date = Utils.as_timestamp_to_epoch(post.get('published', '1900-01-01T00:00:00Z'))
