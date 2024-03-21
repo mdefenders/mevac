@@ -35,24 +35,25 @@ and Twitter to my own, self-hosted Mastodon instance-based dedicated accounts.
 The default script behaviour may be configured using environment variables. Variables without default values are
 prompted
 
-| Env var                      |        Default value |   
-|:-----------------------------|--------------------:|
-| LOGLEVEL                     |                 INFO |
-| MASTODON_DOMAIN              |                    - |
-| MASTODON_RATELIMIT_RETRIES   |                    3 |
-| MASTODON_CLIENT_ACCESS_TOKEN |                    - |
-| MASTODON_TEXT_SIZE_LIMIT     |                  500 |
-| MASTODON_WORK_DIR            |                   ./ |
-| MASTODON_PUSH_PRIVATE         |                    1|
-| MASTODON_MEDIA_TIMEOUT       |                   10 |
-| MASTODON_MEDIA_RETRIES       |                    3 |
-| DB_FILE                      | /app/db/evacuator.db |
+| Env var                      | Description                                        |        Default value |   
+|:-----------------------------|----------------------------------------------------|---------------------:|
+| LOGLEVEL                     | Logging level                                      |                 INFO |
+| MASTODON_DOMAIN              | Mastodon server FQDN                               |                    - |
+| MASTODON_RATELIMIT_RETRIES   | Retries on ratelimit                               |                    3 |
+| MASTODON_CLIENT_ACCESS_TOKEN | Client access token                                |                    - |
+| MASTODON_TEXT_SIZE_LIMIT     | Post text size limit                               |                  500 |
+| FB_POSTS_DIR                 | Fb backup directory  (contains xxx_posts_nnn.json) |              ./posts |
+| MST_POSTS_DIR                | Mastodon backup directory (contains outbox.json)   |           ./mstposts |
+| MASTODON_VISIBILITY          | Fb posts visibility                                |              private |
+| MASTODON_MEDIA_TIMEOUT       | Wait for media upload                              |                   10 |
+| MASTODON_MEDIA_RETRIES       | Media upload retries                               |                    3 |
+| DB_FILE                      | SQLite DB path                                     | /app/db/evacuator.db |
 
 ## Important notes
 
-Because of uncertainty of source data, and different visibility models, the script uploads all posts with "Public" or "
-Followers only" visibility. The default is "followers only". You can change this behaviour setting MASTODON_PUSH_PRIVATE
-variable into '0'.
+Because of uncertainty of source data, and different visibility models, the script uploads all Facebook posts with
+visibility, configured by MASTODON_PUSH_VISIBILITY. public, private and direct are supported. The default value
+is "private".
 
 ## Docker container commands and options
 
@@ -75,7 +76,7 @@ option**
 
 Processing large media files takes a time from Mastodon server, so they cannot be used immediately with the new post.
 The scripts waits for MASTODON_MEDIA_TIMEOUT*MASTODON_MEDIA_RETRIES seconds for the media to be processed.
-If the media isn't ready, post cam be skipped by the server. You can see in post push report the count of "Partially
+If the media isn't ready, post can be skipped by the server. You can see in post push report the count of "Partially
 pushed" posts. You can run the push command again with "--retry" option to re-push the skipped posts. As Mastodon
 doesn't provide an option to push posts in the past, the script will push the post on top of your timeline.
 

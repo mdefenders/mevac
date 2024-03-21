@@ -147,11 +147,11 @@ class MstImporter:
                 logging.warning(f'Skip Announce post. Post id: {post.get("id")}')
                 continue
             if not post.get('to', []):
-                privacy = 3
-            elif post.get('to')[0][-6:] != 'Public':
-                privacy = 0
+                privacy = 'direct'
+            elif post.get('to')[0][-6:] == 'Public':
+                privacy = 'public'
             else:
-                privacy = 1
+                privacy = 'private'
             object_id = post.get('object', {})
             split_object_id = object_id.get('id', '').rsplit('/', 1)
             post_id = int(split_object_id[-1])
@@ -186,8 +186,8 @@ class MstImporter:
                                 logging.info(f'Dry-run {dry_run}. '
                                              f'Adding attachment {attachment["url"]} to post {post_id}')
                                 if not dry_run:
-                                    c.execute('INSERT INTO mst_media (post_id, media_type, uri) VALUES (?, ?, ?)',
-                                              (post_id, attachment['mediaType'], attachment['url']))
+                                    c.execute('INSERT INTO mst_media (post_id, uri) VALUES (?, ?)',
+                                              (post_id, attachment['url']))
                                 media_count += 1
                                 post_media_count += 1
                             except sqlite3.IntegrityError:
@@ -222,10 +222,10 @@ class MstImporter:
     def _prepare_db(self):
         c = self._conn.cursor()
         c.execute('CREATE TABLE IF NOT EXISTS mst_posts (id INTEGER PRIMARY KEY, parent_id INTEGER default 0, '
-                  'original_date INTEGER default 0, privacy INTEGER default 0, language TEXT, text TEXT, '
+                  'original_date INTEGER default 0, privacy TEXT, language TEXT, text TEXT, '
                   'sensitive INTEGER default 0, posted INTEGER default 0)')
-        c.execute('CREATE TABLE IF NOT EXISTS mst_media (id INTEGER PRIMARY KEY, post_id INTEGER, media_type TEXT, '
-                  'uri TEXT, posted INTEGER default 0)')
+        c.execute('CREATE TABLE IF NOT EXISTS mst_media (id INTEGER PRIMARY KEY, post_id INTEGER, uri TEXT, '
+                  'posted INTEGER default 0)')
         c.execute('CREATE UNIQUE INDEX IF NOT EXISTS mst_media_post_id_uri ON mst_media (post_id, uri)')
         c.execute('CREATE INDEX IF NOT EXISTS mst_parent_id ON mst_posts (parent_id)')
         self._conn.commit()
