@@ -48,11 +48,13 @@ class Pusher:
                 if not dry_run:
                     c.execute('UPDATE fb_posts SET posted = ? WHERE id = ?', (result_post_id, fb_post[0],))
                     self._conn.commit()
-                result.append(post_ids)
+                result = result + post_ids
                 fb_post_posted += 1
         return result
 
-    def push_mst_posts(self, parent_id='0', dry_run=True, retry=False, add_date_tags=True):
+    def push_mst_posts(self, parent_id='0', in_reply_to='0', dry_run=True, retry=False, add_date_tags=False):
+        if parent_id == '0':
+            logging.info(f'Pushing reply for parent_id {parent_id}')
         c = self._conn.cursor()
         if retry:
             post_condition = '2'
@@ -75,7 +77,7 @@ class Pusher:
             logging.info(f'Dry-run {dry_run}. {mst_post_posted}/{mst_posts_count} '
                          f'Posting toot from {strftime("%d-%m-%Y %H:%M:%S", post_date)}: {mst_post[5][:20]}')
             post_id = self._mst.post_mst_status(mst_post[5], mst_post[4], media_post_ids, mst_post[3], mst_post[6],
-                                                parent_id, dry_run)
+                                                in_reply_to, dry_run)
             if post_id == '0':
                 post_id = '2'
             if not dry_run:
@@ -83,6 +85,8 @@ class Pusher:
                 self._conn.commit()
             result.append(post_id)
             mst_post_posted += 1
+            # Thread processing
+            result = result + self.push_mst_posts(str(mst_post[0]), post_id, dry_run, retry, False)
         return result
 
     def _push_post_media(self, post_id, media_condition, media_source, media_root, dry_run=True):
