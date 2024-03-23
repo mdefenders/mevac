@@ -62,7 +62,7 @@ class Mastodon:
                 code = exc.response.status_code
                 if code == HTTPStatus.TOO_MANY_REQUESTS:
                     logging.warning(f'API rate-limit exceeded. Sleeping for: '
-                                    f'{datetime.timedelta(seconds=self._env.ratelimit_reset)} sec')
+                                    f'{datetime.timedelta(seconds=self._env.ratelimit_reset)}')
                     time.sleep(self._env.ratelimit_reset)
                     continue
                 elif code == HTTPStatus.UNPROCESSABLE_ENTITY:
@@ -136,7 +136,7 @@ class Mastodon:
                 code = exc.response.status_code
                 if code == HTTPStatus.TOO_MANY_REQUESTS:
                     logging.warning(f'API rate-limit exceeded. Sleeping for: '
-                                    f'{datetime.timedelta(seconds=self._env.ratelimit_reset)} sec')
+                                    f'{datetime.timedelta(seconds=self._env.ratelimit_reset)}')
                     time.sleep(self._env.ratelimit_reset)
                     continue
                 raise
