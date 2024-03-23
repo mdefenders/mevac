@@ -42,7 +42,7 @@ def main():
         if args.type == "facebook":
             pusher.push_fb_posts(not args.no_dry_run, args.retry)
         elif args.type == "mastodon":
-            pusher.push_mst_posts(not args.no_dry_run, args.retry)
+            pusher.push_mst_posts('0', '0', not args.no_dry_run, args.retry)
         elif args.type == "twitter":
             pass
         elif args.type == "report":
