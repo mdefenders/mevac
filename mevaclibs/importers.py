@@ -174,7 +174,7 @@ class MstImporter:
             else:
                 sensitive = 0
             language, text = list(post['object']['contentMap'].items())[0]
-            text = BeautifulSoup(text, 'html.parser').get_text()
+            text = BeautifulSoup(text, 'html.parser').get_text(separator='\n')
             if text != '' or post['object']['attachment']:
                 posts_count += 1
                 try:
