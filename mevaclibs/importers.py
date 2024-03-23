@@ -198,8 +198,8 @@ class MstImporter:
                     if not dry_run:
                         c.execute(
                             'INSERT INTO mst_posts (id, parent_id, original_date, privacy, language, text, sensitive)'
-                            ' VALUES (?, ?, ?, ?, ?, ?, ?)', (post_id, parent_id, original_date, privacy, language,
-                                                             text, sensitive))
+                            ' VALUES (?, ?, ?, ?, ?, ?, ?)',
+                            (post_id, parent_id, original_date, privacy, language, text, sensitive))
                     self._conn.commit()
                 except sqlite3.IntegrityError:
                     logging.warning(

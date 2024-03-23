@@ -40,7 +40,7 @@ class TestMastodon(unittest.TestCase):
             self.assertEqual(post_id, deleted_post_id)
 
     def test_hidden_post(self):
-        post_ids = self.mst.post_fb_status('Integration Private test', visibility=True, dry_run=False)
+        post_ids = self.mst.post_fb_status('Integration Private test', visibility='private', dry_run=False)
         for post_id in post_ids:
             deleted_post_id = self.mst.delete_entity(post_id)
             self.assertEqual(post_id, deleted_post_id)
