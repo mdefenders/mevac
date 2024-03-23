@@ -80,6 +80,7 @@ class PushEnv(object):
         self._visibility = os.environ.get('MASTODON_VISIBILITY', 'private')
         self._media_timeout = os.environ.get('MASTODON_MEDIA_TIMEOUT', '10')
         self._media_retries = os.environ.get('MASTODON_MEDIA_RETRIES', '3')
+        self._date_tags = os.environ.get('MASTODON_DATE_TAGS', 'True')
         if self._text_size_limit < 20:
             self._text_size_limit = 500
         self._ratelimit_limit = 0
@@ -153,3 +154,7 @@ class PushEnv(object):
     @property
     def text_size_limit(self):
         return self._text_size_limit
+
+    @property
+    def date_tags(self):
+        return self._date_tags.lower() == 'true'

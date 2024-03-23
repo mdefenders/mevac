@@ -47,6 +47,7 @@ prompted
 | MASTODON_VISIBILITY          | Fb posts visibility                                |              private |
 | MASTODON_MEDIA_TIMEOUT       | Wait for media upload                              |                   10 |
 | MASTODON_MEDIA_RETRIES       | Media upload retries                               |                    3 |
+| MASTODON_DATE_TAGS           | Add date tags to the post                          |                 True |
 | DB_FILE                      | SQLite DB path                                     | /app/db/evacuator.db |
 
 ## Important notes

@@ -52,8 +52,8 @@ class Pusher:
                 fb_post_posted += 1
         return result
 
-    def push_mst_posts(self, parent_id='0', in_reply_to='0', dry_run=True, retry=False, add_date_tags=False):
-        if parent_id == '0':
+    def push_mst_posts(self, parent_id='0', in_reply_to='0', dry_run=True, retry=False):
+        if parent_id != '0':
             logging.info(f'Pushing reply for parent_id {parent_id}')
         c = self._conn.cursor()
         if retry:
@@ -86,7 +86,12 @@ class Pusher:
             result.append(post_id)
             mst_post_posted += 1
             # Thread processing
-            result = result + self.push_mst_posts(str(mst_post[0]), post_id, dry_run, retry, False)
+            if parent_id == '0' and self._push_env.date_tags and post_id != '2':
+                tagged_ext = (
+                    f'{" ".join(mst_post[5].split()[:8])}...\n Posted #{strftime("day%d%b%Y", post_date)} '
+                    f'#{strftime("%b%Y", post_date)} #{strftime("year%Y", post_date)}')
+                self._mst.post_mst_status(tagged_ext, mst_post[4], None, mst_post[3], mst_post[6], post_id, dry_run)
+            result = result + self.push_mst_posts(str(mst_post[0]), post_id, dry_run, retry)
         return result
 
     def _push_post_media(self, post_id, media_condition, media_source, media_root, dry_run=True):
