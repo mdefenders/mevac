@@ -11,8 +11,8 @@ def main():
     logging.basicConfig(level=os.environ.get('LOGLEVEL', 'INFO').upper())
 
     parser = argparse.ArgumentParser(description='Import data from social media platforms.')
-    parser.add_argument('operation', choices=['load', 'push'], type=str, help='Command to execute')
-    parser.add_argument('type', choices=['facebook', 'twitter', 'mastodon', 'report'], type=str, help='Data type')
+    parser.add_argument('operation', choices=['load', 'push', 'report'], type=str, help='Command to execute')
+    parser.add_argument('type', choices=['facebook', 'twitter', 'mastodon'], type=str, help='Data type')
     parser.add_argument('--no-dry-run', action='store_true', help='Disable dry run mode')
     parser.add_argument('--retry', action='store_true', help='Retry skipped posts')
 
@@ -20,23 +20,23 @@ def main():
     load_env = LoadEnv()
 
     importer = None
-    if args.type == "facebook":
-        importer = FbImporter(load_env)
-    elif args.type == "mastodon":
-        importer = MstImporter(load_env)
 
     if args.operation == "load":
 
         if args.type == "facebook":
+            importer = FbImporter(load_env)
             importer.load_fb_posts(not args.no_dry_run)
+            importer.collect_stat()
+            importer.print_stat()
         elif args.type == "twitter":
             pass
         elif args.type == "mastodon":
+            importer = MstImporter(load_env)
             importer.load_mst_posts(not args.no_dry_run)
-        elif args.type == "report":
-            pass
+            importer.collect_stat()
+            importer.print_stat()
 
-    if args.operation == "push":
+    elif args.operation == "push":
         push_env = PushEnv()
         pusher = Pusher(load_env, push_env)
         if args.type == "facebook":
@@ -47,8 +47,14 @@ def main():
             pass
         elif args.type == "report":
             pass
-    importer.collect_stat()
-    importer.print_stat()
+
+    elif args.operation == "report":
+        if args.type == "facebook":
+            importer = FbImporter(load_env)
+        elif args.type == "mastodon":
+            importer = MstImporter(load_env)
+        importer.collect_stat()
+        importer.print_stat()
 
 
 if __name__ == '__main__':

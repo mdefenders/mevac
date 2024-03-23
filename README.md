@@ -64,13 +64,14 @@ failures and avoid duplicates. Removing the db file will reset the process.
 
 For FB the post timestamp is used as a unique key.
 
-| Command                  | Description                                   |   
-|:-------------------------|:----------------------------------------------|
-| load facebook            | loads FB archive into internal database       |
-| push facebook            | pushes FB archive to Mastodon                 |
-| load mastodon            | loads Mastodon archive into internal database |
-| push mastodon            | pushes Mastodon archive to Mastodon           |
-| load report, push report | prints the current process state              |
+| Command         | Description                                   |   
+|:----------------|:----------------------------------------------|
+| load facebook   | loads FB archive into internal database       |
+| push facebook   | pushes FB archive to Mastodon                 |
+| load mastodon   | loads Mastodon archive into internal database |
+| push mastodon   | pushes Mastodon archive to Mastodon           |
+| report facebook | prints facebook report                        |
+| report mastodon | prints mastodon report                        |
 
 **IMPORTANT: Dry-run mode is default behaviour for all commands. To run the command in the real mode, add --no-dry-run
 option**
