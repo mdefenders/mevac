@@ -64,11 +64,13 @@ failures and avoid duplicates. Removing the db file will reset the process.
 
 For FB the post timestamp is used as a unique key.
 
-| Command                  | Description                             |   
-|:-------------------------|:----------------------------------------|
-| load facebook            | loads FB archive into internal database |
-| push facebook            | pushes FB archive to Mastodon           |
-| load report, push report | prints the current process state        |
+| Command                  | Description                                   |   
+|:-------------------------|:----------------------------------------------|
+| load facebook            | loads FB archive into internal database       |
+| push facebook            | pushes FB archive to Mastodon                 |
+| load mastodon            | loads Mastodon archive into internal database |
+| push mastodon            | pushes Mastodon archive to Mastodon           |
+| load report, push report | prints the current process state              |
 
 **IMPORTANT: Dry-run mode is default behaviour for all commands. To run the command in the real mode, add --no-dry-run
 option**
@@ -146,7 +148,7 @@ docker run --rm -ti  -v ./db/:/app/db mdefenders/mevac:latest load report
  Pushed     |       0
 ```
 
-### Push posts to Mastodon
+### Push posts to Facebook
 
 ```shell
 docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefenders/mevac:latest push facebook
@@ -166,6 +168,10 @@ docker run --rm -ti -v ./tests/testdata/posts:/app/posts -v ./db:/app/db mdefend
 ```
 
 # Changelog
+
+## 0.0.6
+
+- Mastodon import added
 
 ## 0.0.5
 
