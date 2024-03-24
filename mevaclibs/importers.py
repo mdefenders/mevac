@@ -174,11 +174,7 @@ class MstImporter:
             else:
                 sensitive = 0
             language, text = list(post['object']['contentMap'].items())[0]
-            doc_soup = BeautifulSoup(text, 'html.parser')
-            span_tags = doc_soup.find_all('span')
-            for span_tag in span_tags:
-                span_tag.replace_with('')
-            text = doc_soup.get_text(separator='\n')
+            text = BeautifulSoup(text, 'html.parser').get_text(separator='\n')
             if text != '' or post['object']['attachment']:
                 posts_count += 1
                 try:
