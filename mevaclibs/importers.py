@@ -160,7 +160,7 @@ class MstImporter:
             if in_reply_to:
                 split_parent_id = in_reply_to.rsplit('/', 1)
                 # skip replies to external comments
-                if split_parent_id[0] != split_object_id[0]:
+                if split_parent_id[0] != split_object_id[0] or len(post['cc']) > 1:
                     logging.warning(f'Skip external comment reply. Post id: {post.get("id")}')
                     continue
                 parent_id = split_parent_id[-1]

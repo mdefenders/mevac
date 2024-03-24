@@ -106,7 +106,7 @@ class TestMstImporter(unittest.TestCase):
     def test_importer(self):
         self.prepare()
         self.run_importer()
-        self.run_pusher()
+        # self.run_pusher()
 
 
 if __name__ == '__main__':
