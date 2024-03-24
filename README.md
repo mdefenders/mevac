@@ -49,12 +49,17 @@ prompted
 | MASTODON_MEDIA_RETRIES       | Media upload retries                               |                    3 |
 | MASTODON_DATE_TAGS           | Add date tags to the post                          |                 True |
 | DB_FILE                      | SQLite DB path                                     | /app/db/evacuator.db |
+| FILTER_OUT_AT                | Filter out post, started with @mentions            |                 True |
 
 ## Important notes
 
 Because of uncertainty of source data, and different visibility models, the script uploads all Facebook posts with
 visibility, configured by MASTODON_PUSH_VISIBILITY. public, private and direct are supported. The default value
 is "private".
+
+In certain cases, some responses do not contain any reply sign, except for starting with an @mention. By default, 
+these types of posts are omitted by the script. If you wish to include these in the import, you should set the
+`FILTER_OUT_AT` variable to `False`.
 
 ## Docker container commands and options
 

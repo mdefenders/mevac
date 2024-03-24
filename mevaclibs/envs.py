@@ -12,6 +12,7 @@ class LoadEnv(object):
         self._db_file = os.environ.get('DB_FILE', '/app/db/evacuator.db')
         self._env['fb_posts_dir'] = os.environ.get('FB_POSTS_DIR', '')
         self._env['mst_posts_dir'] = os.environ.get('MST_POSTS_DIR', '')
+        self._env['filter_out_at'] = os.environ.get('FILTER_OUT_AT', 'True')
         if not self._env['fb_posts_dir']:
             if os.path.exists('./posts'):
                 self._env['fb_posts_dir'] = './posts'
@@ -67,6 +68,10 @@ class LoadEnv(object):
     @property
     def db_file(self):
         return self._db_file
+
+    @property
+    def filter_out_at(self):
+        return self._env['filter_out_at'].lower() == 'true'
 
 
 class PushEnv(object):

@@ -179,7 +179,7 @@ class MstImporter:
             text = BeautifulSoup(text, 'html.parser').get_text(separator='\n')
             text = text.replace('#\n', '#')
             text = text.replace('@\n', '@')
-            if text != '' and text[0] == '@':
+            if text != '' and self._env.filter_out_at and text[0] == '@':
                 logging.warning(f'Skip post with mention at the beginning (the last relpy leakage dirty fix). Post id:'
                                 f' {post.get("id")}')
                 continue
