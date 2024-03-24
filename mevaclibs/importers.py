@@ -170,7 +170,6 @@ class MstImporter:
             if len(post.get('cc', [])) > 1:
                 logging.warning(f'Skip post with more then one recipient and no inReplyTo. Post id: {post.get("id")}')
                 continue
-
             original_date = Utils.as_timestamp_to_epoch(post.get('published', '1900-01-01T00:00:00Z'))
             if post['object'].get('sensitive', False):
                 sensitive = 1
@@ -180,6 +179,10 @@ class MstImporter:
             text = BeautifulSoup(text, 'html.parser').get_text(separator='\n')
             text = text.replace('#\n', '#')
             text = text.replace('@\n', '@')
+            if text != '' and text[0] == '@':
+                logging.warning(f'Skip post with mention at the beginning (the last relpy leakage dirty fix). Post id:'
+                                f' {post.get("id")}')
+                continue
             if text != '' or post['object']['attachment']:
                 posts_count += 1
                 try:
