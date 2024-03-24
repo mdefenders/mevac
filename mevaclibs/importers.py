@@ -160,13 +160,16 @@ class MstImporter:
             if in_reply_to:
                 split_parent_id = in_reply_to.rsplit('/', 1)
                 # skip replies to external comments
-                if split_parent_id[0] != split_object_id[0] or len(post['cc']) > 1:
+                if split_parent_id[0] != split_object_id[0]:
                     logging.warning(f'Skip external comment reply. Post id: {post.get("id")}')
                     continue
                 parent_id = split_parent_id[-1]
                 if self._get_mst_post_by_id(parent_id)[0] != 1:
                     logging.warning(f'Skip external comment thread. Post id: {post.get("id")}')
                     continue
+            if len(post.get('cc', [])) > 1:
+                logging.warning(f'Skip post with more then one recipient and no inReplyTo. Post id: {post.get("id")}')
+                continue
 
             original_date = Utils.as_timestamp_to_epoch(post.get('published', '1900-01-01T00:00:00Z'))
             if post['object'].get('sensitive', False):
