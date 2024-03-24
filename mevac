@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 import logging
 import os
+import signal
 import argparse
 from mevaclibs.envs import LoadEnv, PushEnv
 from mevaclibs.importers import FbImporter, MstImporter
 from mevaclibs.pusher import Pusher
 
 
+def signal_handler(sig, frame):
+    logging.info('Exiting...')
+    exit(0)
+
+
 def main():
+    signal.signal(signal.SIGINT, signal_handler)
     logging.basicConfig(level=os.environ.get('LOGLEVEL', 'INFO').upper())
 
     parser = argparse.ArgumentParser(description='Import data from social media platforms.')
