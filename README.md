@@ -8,7 +8,8 @@ Currently, the script supports the following networks:
 
 # Introduction
 
-Mastodon does not offer a built-in content migration (import) tool. This is because developers want to avoid overloading the
+Mastodon does not offer a built-in content migration (import) tool. This is because developers want to avoid overloading
+the
 Fediverse with imported content traffic. While this decision is understandable, there are certain scenarios where
 migration could be beneficial. For instance, one might want to transfer a historical archive of content from Facebook
 and Twitter to dedicated accounts on a self-hosted Mastodon instance.
@@ -50,12 +51,19 @@ prompted.
 
 ## Important notes
 
+### General
+
+The script uses SQLite as an internal database to store the imported posts. It allows re-running the push command in
+case of errors or failures without duplicates. The database file is mounted into the /app/db folder inside the container.
+
 ### Facebook import
+
 Due to the variability of source data and different visibility models, the script uploads all Facebook posts with a
 visibility setting configured by MASTODON_PUSH_VISIBILITY. The supported visibility settings are public, private, and
-direct. The default setting is "private". 
+direct. The default setting is "private".
 
 ### Mastodon import
+
 In some cases, responses may not contain any reply sign, except for starting
 with an @mention. By default, these types of posts are excluded by the script. If you wish to include these in the
 import, set the FILTER_OUT_AT variable to False.
