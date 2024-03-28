@@ -1,6 +1,6 @@
 # mEvac
 
-This is a simple script designed to migrate social network post backups to Mastodon.
+This is a simple script designed to migrate (import) social network post backups to Mastodon account.
 Currently, the script supports the following networks:
 
 - Facebook
@@ -8,14 +8,14 @@ Currently, the script supports the following networks:
 
 # Introduction
 
-Mastodon does not offer a built-in content migration tool. This is because developers want to avoid overloading the
+Mastodon does not offer a built-in content migration (import) tool. This is because developers want to avoid overloading the
 Fediverse with imported content traffic. While this decision is understandable, there are certain scenarios where
 migration could be beneficial. For instance, one might want to transfer a historical archive of content from Facebook
 and Twitter to dedicated accounts on a self-hosted Mastodon instance.
 
 # Features
 
-- Migration to Mastodon
+- Migration of Mastodon post archives
 - Migration of Facebook post archives
 - Timestamping and auto-threading of Facebook posts
 - Provided as a docker image
