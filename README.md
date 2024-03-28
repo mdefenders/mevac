@@ -107,7 +107,7 @@ replays and other types of content are ignored.
 
 ## Mastodon
 
-The script imports only posts, and own reply threads. Polls, boosts, starts replies to other users are ignored.
+The script imports only posts, and own reply threads. Polls, boosts, stars, replies to other users are ignored.
 Posts and replies, started with @mentions may be missed.
 
 # Expected runtime
